@@ -123,33 +123,32 @@ def PredictSentiment(frame):
         faceLabel = label
         print('Face Detected')
 
+    cv.rectangle(frame, (leftX,leftY), (leftX+leftW,leftY+leftH), (0, 255, 0), thickness=1)
+    cv.rectangle(frame, (rightX,rightY), (rightX+rightW,rightY+rightH), (255, 0, 0), thickness=1)
+    cv.rectangle(frame, (faceX,faceY), (faceX+faceW,faceY+faceH), (0, 0, 255), thickness=1)
+    
     sentiment = determineOveralSentiment(leftLabel, rightLabel, faceLabel)
     
-    print(f'Predicted: {sentiment}')
-    return sentiment
+    #Background
+    cv.rectangle(frame, (0,0), (180,54), (0,0,0), -1)
+    #Is a face detected label
+    cv.putText(frame, f'Left Sentiment: ', (6, 12), cv.FONT_HERSHEY_TRIPLEX, 0.4, (255, 255, 255), thickness=1)
+    #The current sentiment of a detected face
+    cv.putText(frame, f'Right Sentiment: ', (6, 24), cv.FONT_HERSHEY_TRIPLEX, 0.4, (255, 255, 255), thickness=1)
+    #The confidence of that sentiment
+    cv.putText(frame, f'Facial Sentiment: ', (6, 36), cv.FONT_HERSHEY_TRIPLEX, 0.4, (255, 255, 255), thickness=1)
+    cv.putText(frame, f'Overall Sentiment: {sentiment}', (6, 48), cv.FONT_HERSHEY_TRIPLEX, 0.4, (255, 255, 255), thickness=1)
 
-def PredictSentimentFromFaceOnly(frame):
-    print('Beginning Prediction...')
-    #Brighten
-    frame = increase_brightness(frame, 20)
-    frame = cv.resize(frame, (300, 300))
-
-    #convert to grayscale
-    gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-    #find all faces in the given frame
-    face_rect = faceHaar.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=12)
-
-    faceLabel = 2
-    sentiment = 'none'
+    return frame
     
-    (faceX, faceY, faceW, faceH) = getClosest(face_rect)
-    if(len(face_rect) > 0):
-        face_roi = gray[faceY:faceY+faceH, faceX:faceX+faceW]
-        label, confidence = face_recognizer.predict(face_roi)
-        faceLabel = label
-        print('Face Detected')
 
-    sentiment = categories[faceLabel]
-    
-    print(f'Predicted: {sentiment}')
-    return sentiment
+img = cv.imread('01.jpg')
+img = cv.resize(img, (500, 500))
+
+frame = PredictSentiment(img)
+
+cv.imshow("test", frame)
+
+cv.waitKey(0)
+
+cv.destroyAllWindows()

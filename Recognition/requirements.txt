@@ -1,0 +1,5 @@
+flask
+opencv-contrib-python
+caer
+numpy
+python-dotenv

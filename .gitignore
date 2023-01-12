@@ -1,5 +1,7 @@
 node_modules/
 .expo/
+.venv/
+__pycache__/
 dist/
 npm-debug.*
 *.jks
